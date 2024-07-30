@@ -32,7 +32,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{2fed7576-18cf-4050-bf22-176fa50f402b}</ProjectGuid>
+    <ProjectGuid>{8F2F78E4-59DB-4B1F-8343-9FD5560BA374}</ProjectGuid>
     <RootNamespace>Test1</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
     <ProjectName>CudaExample</ProjectName>

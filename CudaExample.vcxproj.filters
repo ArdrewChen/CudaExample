@@ -18,12 +18,15 @@
     <ClInclude Include="Code\include\hello_world.cuh">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="Code\include\thread_id.cuh">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Code\src\hello_world.cu">
       <Filter>源文件</Filter>
     </CudaCompile>
-    <CudaCompile Include="Code\src\kernel.cu">
+    <CudaCompile Include="Code\src\thread_id.cu">
       <Filter>源文件</Filter>
     </CudaCompile>
   </ItemGroup>
