@@ -20,10 +20,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\include\hello_world.cuh" />
+    <ClInclude Include="Code\include\thread_id.cuh" />
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Code\src\hello_world.cu" />
-    <CudaCompile Include="Code\src\kernel.cu" />
+    <CudaCompile Include="Code\src\thread_id.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\src\main.cpp" />
