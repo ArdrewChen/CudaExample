@@ -15,19 +15,21 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
+    <ClInclude Include="Code\include\hello_world.cuh">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="kernel.cu" />
-    <CudaCompile Include="hello_world.cu">
+    <CudaCompile Include="Code\src\hello_world.cu">
+      <Filter>源文件</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Code\src\kernel.cu">
       <Filter>源文件</Filter>
     </CudaCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hello_world.cuh">
-      <Filter>头文件</Filter>
-    </ClInclude>
+    <ClCompile Include="Code\src\main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
