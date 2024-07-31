@@ -1,6 +1,5 @@
 ﻿#include <iostream>
 #include "hello_world.cuh"
-#include "thread_id.cuh"
 
 int main() {
 	//kernel_hello_world();
