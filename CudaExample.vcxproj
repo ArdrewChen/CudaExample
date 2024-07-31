@@ -23,6 +23,7 @@
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Code\src\hello_world.cu" />
+    <CudaCompile Include="Code\src\sumArray.cu" />
     <CudaCompile Include="Code\src\thread_id.cu" />
   </ItemGroup>
   <ItemGroup>

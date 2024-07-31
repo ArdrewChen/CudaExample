@@ -26,6 +26,9 @@
     <CudaCompile Include="Code\src\thread_id.cu">
       <Filter>源文件</Filter>
     </CudaCompile>
+    <CudaCompile Include="Code\src\sumArray.cu">
+      <Filter>源文件</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\src\main.cpp">
