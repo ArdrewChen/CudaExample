@@ -66,7 +66,6 @@ void kernel_sumArray()
 	int dev = 0;
 	cudaSetDevice(dev);
 
-
 	int nElem = 32;
 	int nByte = nElem * sizeof(float);
 	float* h_a = (float*)malloc(nByte);
