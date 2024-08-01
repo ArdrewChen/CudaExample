@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <iostream>
 
 #define CHECK(call)                                                            \
 {                                                                              \
@@ -18,13 +19,14 @@
     }                                                                          \
 }
 
-
+// GPU核函数，实现向量相加
 __global__ void sumArrayGPU(float* d_a, float* d_b, float* d_res, dim3 block)
 {
 	int i = blockIdx.x * block.x + threadIdx.x;
 	d_res[i] = d_a[i] + d_b[i];
 }
 
+// CPU函数，实现向量相加
 void sumArrays(float* a, float* b, float* res, const int size)
 {
 	for (int i = 0; i < size; i++)
@@ -87,7 +89,25 @@ void kernel_sumArray()
 
 	dim3 block(nElem / 4);
 	dim3 grid(nElem / block.x);
-	sumArrayGPU << <grid, block >> > (d_a, d_b, d_res, block);
+
+	sumArrayGPU << <grid, block >> > (d_a, d_b, d_res, block);  // 计时前作为预热函数
+
+	// 添加计时器
+	cudaEvent_t start, stop;
+	float duration_gpu = 0.0f;
+	cudaEventCreate(&start);
+	cudaEventCreate(&stop);
+	cudaEventRecord(start, 0);
+
+	sumArrayGPU << <grid, block >> > (d_a, d_b, d_res, block);  // 执行核函数
+
+	cudaDeviceSynchronize();
+	cudaEventRecord(stop, 0);
+	cudaEventSynchronize(start);
+	cudaEventSynchronize(stop);
+	cudaEventElapsedTime(&duration_gpu, start, stop);
+	std::cout << "持续时间 = " << duration_gpu << "ms" << std::endl;
+
 	printf("Execution configuration<<<%d,%d>>>\n", block.x, grid.x);
 	cudaMemcpy(h_res_from_gpu, d_res, nByte, cudaMemcpyDeviceToHost);
 	sumArrays(h_a, h_b, h_res, nElem);
