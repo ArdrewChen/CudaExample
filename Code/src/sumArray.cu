@@ -20,9 +20,9 @@
 }
 
 // GPU核函数，实现向量相加
-__global__ void sumArrayGPU(float* d_a, float* d_b, float* d_res, dim3 block)
+__global__ void sumArrayGPU(float* d_a, float* d_b, float* d_res)
 {
-	int i = blockIdx.x * block.x + threadIdx.x;
+	int i = blockIdx.x * blockDim.x + threadIdx.x;
 	d_res[i] = d_a[i] + d_b[i];
 }
 
@@ -89,7 +89,7 @@ void kernel_sumArray()
 	dim3 block(nElem / 4);
 	dim3 grid(nElem / block.x);
 
-	sumArrayGPU << <grid, block >> > (d_a, d_b, d_res, block);  // 计时前作为预热函数
+	sumArrayGPU << <grid, block >> > (d_a, d_b, d_res);  // 计时前作为预热函数
 
 	// 添加计时器
 	cudaEvent_t start, stop;
@@ -98,7 +98,7 @@ void kernel_sumArray()
 	cudaEventCreate(&stop);
 	cudaEventRecord(start, 0);
 
-	sumArrayGPU << <grid, block >> > (d_a, d_b, d_res, block);  // 执行核函数
+	sumArrayGPU << <grid, block >> > (d_a, d_b, d_res);  // 执行核函数
 
 	cudaDeviceSynchronize();
 	cudaEventRecord(stop, 0);
