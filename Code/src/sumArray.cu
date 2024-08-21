@@ -51,13 +51,22 @@ void checkResult(float* res, float* res_from_gpu, const int size)
 // 随机生成数据
 void initialData(float* ip, int size)
 {
-	// generate different seed for random number
+	std::cout<< "生成的随机数为：" << std::endl;
 	time_t t;
 	srand((unsigned)time(&t));
 	for (int i = 0; i < size; i++)
 	{
 		ip[i] = (float)(rand() & 0xFF) / 10.0f;
+		if (i < 20)
+		{
+			std::cout << ip[i] << "  ";
+		}
 	}
+	if (size >= 20)
+	{
+		std::cout << "元素过多，不显示";
+	}
+	std::cout<< std::endl;
 	return;
 }
 

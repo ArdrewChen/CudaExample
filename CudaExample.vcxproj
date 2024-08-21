@@ -24,6 +24,7 @@
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="Code\src\hello_world.cu" />
+    <CudaCompile Include="Code\src\sumVector.cu" />
     <CudaCompile Include="Code\src\sumArray.cu" />
     <CudaCompile Include="Code\src\sumMatrix.cu" />
     <CudaCompile Include="Code\src\thread_id.cu" />

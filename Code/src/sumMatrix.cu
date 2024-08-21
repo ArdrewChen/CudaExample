@@ -43,6 +43,7 @@ void sumMatrix_CPU(float* h_a, float* h_b, float* h_res, const int nx, const int
 
 void kernel_sumMatrix()
 {	
+	// 选择设备
 	int dev = 0;
 	cudaSetDevice(dev);
 
@@ -77,8 +78,7 @@ void kernel_sumMatrix()
 	dim3 block(20, 40);
 	dim3 grid(80, 40);
 	
-	// 打印线程索引，测试线程索引公式
-	//printThreadIndex<<<grid, block>>>();
+	// 调用核函数
 	sumMatrix_GPU<< <grid,block>> >(d_a, d_b, d_res);
 	cudaDeviceSynchronize();
 
@@ -125,4 +125,5 @@ void kernel_sumMatrix()
 	free(h_a);
 	free(h_b);
 	free(h_res);
+	free(h_res_fromGPU);
 }
