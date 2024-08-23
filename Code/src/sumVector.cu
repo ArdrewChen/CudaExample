@@ -18,7 +18,7 @@ float sumVector_CPU(float *idata, int n)
 // GPU并行规约实现，求解向量之和，未改善分化问题，线程利用效率低
 __global__ void sumVector_GPU(float *idata, float *odata, unsigned int size) 
 {
-	unsigned int tid = threadIdx.x;
+	int tid = threadIdx.x;
 	float *idata_tmp = idata + blockIdx.x * blockDim.x;
 
 	// for循环一次是计算一个线程块个元素
@@ -39,7 +39,7 @@ __global__ void sumVector_GPU(float *idata, float *odata, unsigned int size)
 // 改善分化
 __global__ void sumVectorImproved_GPU(float *idata, float *odata, unsigned int size) 
 {
-	unsigned int tid = threadIdx.x;
+	int tid = threadIdx.x;
 	float *idata_tmp = idata + blockIdx.x * blockDim.x;
 	for(int stride=1; stride<blockDim.x; stride *= 2)
 	{
@@ -79,17 +79,12 @@ void kernel_sumVector()
 
 	//设备内存申请
 	float* d_a = NULL;
-	float* d_b = NULL;
 	float* d_res = NULL;
 	cudaMalloc((float**)&d_a, nBytes);
 	cudaMalloc((float**)&d_res, nBytes);
 
 	//初始化主机数据，初始化数组
-	initialData(h_a, nx);
-
-	// 将主机数据拷贝到设备
-	cudaMemcpy(d_a, h_a, nBytes, cudaMemcpyHostToDevice); // 未改善分化数据
-	cudaMemcpy(d_b, h_a, nBytes, cudaMemcpyHostToDevice);
+	initialData(h_a, nx);	
 	
 	//定义线程块和网格
 	dim3 block(nx, 1);    // 更改维度，无法正常运行
@@ -100,6 +95,8 @@ void kernel_sumVector()
 	cudaDeviceSynchronize();
 
 	// 调用核函数
+	// 将主机数据拷贝到设备
+	cudaMemcpy(d_a, h_a, nBytes, cudaMemcpyHostToDevice); // 未改善分化数据
 	cudaEvent_t start, stop;
 	float duration_gpu = 0.0f;
 	cudaEventCreate(&start);
@@ -121,19 +118,17 @@ void kernel_sumVector()
 	sum = h_res_fromGPU[0];
 	std::cout << "sumVector_GPU sum = " << sum << std::endl;
 
-	// CPU执行
-	float sum_cpu = 0;
-	sum_cpu = sumVector_CPU(h_a, nx);
-	std::cout << "CPU sum = " << sum << std::endl;
 
 	// 并行改善分化1
+	// 将主机数据拷贝到设备
+	cudaMemcpy(d_a, h_a, nBytes, cudaMemcpyHostToDevice); // 未改善分化数据
 	cudaEvent_t start1, stop1;
 	float duration_gpu1 = 0.0000f;
 	cudaEventCreate(&start1);
 	cudaEventCreate(&stop1);
 	cudaEventRecord(start1, 0);
 
-	sumVectorImproved_GPU << <grid, block >> > (d_b, d_res, nx);
+	sumVectorImproved_GPU << <grid, block >> > (d_a, d_res, nx);
 	cudaDeviceSynchronize();
 
 	cudaEventRecord(stop1, 0);
@@ -148,9 +143,15 @@ void kernel_sumVector()
 	sum1 = h_res_fromGPU[0];
 	std::cout << "sumVectorImproved_GPU sum = " << sum1 << std::endl;
 
+	// CPU执行
+	float sum_cpu = 0;
+	sum_cpu = sumVector_CPU(h_a, nx);
+	std::cout << "CPU sum = " << sum_cpu << std::endl;
+
+
+
 	// 释放内存
 	cudaFree(d_a);
-	cudaFree(d_b);
 	cudaFree(d_res);
 
 
