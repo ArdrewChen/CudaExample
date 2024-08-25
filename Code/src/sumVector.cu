@@ -1,3 +1,4 @@
+// 求解一个向量的所有元素的和，使用归约法
 #include <cuda_runtime.h>
 #include <device_launch_parameters.h>
 #include <stdio.h>
@@ -15,7 +16,7 @@ float sumVector_CPU(float *idata, int n)
 	return sum;
 }
 
-// GPU并行规约实现，求解向量之和，未改善分化问题，线程利用效率低
+// GPU并行归约实现，求解向量之和，未改善分化问题，线程利用效率低
 __global__ void sumVector_GPU(float *idata, float *odata, unsigned int size) 
 {
 	int tid = threadIdx.x;
@@ -36,8 +37,8 @@ __global__ void sumVector_GPU(float *idata, float *odata, unsigned int size)
 	}
 }
 
-// 改善分化
-__global__ void sumVectorImproved_GPU(float *idata, float *odata, unsigned int size) 
+// 改善分化1：线程索引和数组索引不再一一对应
+__global__ void sumVectorImproved1_GPU(float *idata, float *odata, unsigned int size) 
 {
 	int tid = threadIdx.x;
 	float *idata_tmp = idata + blockIdx.x * blockDim.x;
@@ -57,6 +58,32 @@ __global__ void sumVectorImproved_GPU(float *idata, float *odata, unsigned int s
 	}
 
 }
+
+// 改善分化2：将待处理的向量分成多个块，使用多个线程块处理数据，先进行一次向量加法，然后归约
+__global__ void sumVectorImproved2_GPU(float* idata, float* odata, unsigned int size)
+{
+	int tid = threadIdx.x;
+	float* idata_tmp = idata + blockIdx.x * blockDim.x * 2;
+	int idx = tid + blockIdx.x * blockDim.x * 2;
+	if (idx + blockDim.x < size)		// 关键步骤，先进行一次向量加法
+	{
+		idata[idx] += idata[idx + blockDim.x];
+	}
+	for (int stride = 1; stride < blockDim.x/2; stride *= 2)
+	{
+		int index = 2 * stride * tid;	
+		if (index < blockDim.x)
+		{
+			idata_tmp[index] += idata_tmp[index + stride];
+		}
+		__syncthreads();
+	}
+	if (tid == 0)
+	{
+		odata[blockIdx.x] = idata_tmp[0];
+	}
+}
+
 
 // 预热函数
 __global__ void warmup() {
@@ -128,20 +155,44 @@ void kernel_sumVector()
 	cudaEventCreate(&stop1);
 	cudaEventRecord(start1, 0);
 
-	sumVectorImproved_GPU << <grid, block >> > (d_a, d_res, nx);
+	sumVectorImproved1_GPU << <grid, block >> > (d_a, d_res, nx);
 	cudaDeviceSynchronize();
 
 	cudaEventRecord(stop1, 0);
 	cudaEventSynchronize(start1);
 	cudaEventSynchronize(stop1);
 	cudaEventElapsedTime(&duration_gpu1, start1, stop1);
-	std::cout << "sumVectorImproved_GPU运行时间 = " << duration_gpu1 << "ms" << std::endl;
+	std::cout << "sumVectorImproved1_GPU运行时间 = " << duration_gpu1 << "ms" << std::endl;
 
 	// 将结果拷贝到主机
 	cudaMemcpy(h_res_fromGPU, d_res, nBytes, cudaMemcpyDeviceToHost);
 	float sum1 = 0;
 	sum1 = h_res_fromGPU[0];
 	std::cout << "sumVectorImproved_GPU sum = " << sum1 << std::endl;
+
+
+	// 并行改善分化2，改善2需要多个块，需要更改block和grid的值
+	dim3 block2();
+	dim3 grid2();
+	cudaMemcpy(d_a, h_a, nBytes, cudaMemcpyHostToDevice); 
+	cudaEventCreate(&start1);
+	cudaEventCreate(&stop1);
+	cudaEventRecord(start1, 0);
+
+	sumVectorImproved2_GPU << <grid, block >> > (d_a, d_res, nx);
+	cudaDeviceSynchronize();
+
+	cudaEventRecord(stop1, 0);
+	cudaEventSynchronize(start1);
+	cudaEventSynchronize(stop1);
+	cudaEventElapsedTime(&duration_gpu1, start1, stop1);
+	std::cout << "sumVectorImproved2_GPU运行时间 = " << duration_gpu1 << "ms" << std::endl;
+
+	// 将结果拷贝到主机
+	cudaMemcpy(h_res_fromGPU, d_res, nBytes, cudaMemcpyDeviceToHost);
+	sum1 = h_res_fromGPU[0];
+	std::cout << "sumVectorImproved_GPU sum = " << sum1 << std::endl;
+
 
 	// CPU执行
 	float sum_cpu = 0;
