@@ -69,12 +69,11 @@ __global__ void sumVectorImproved2_GPU(float* idata, float* odata, unsigned int 
 	{
 		idata[idx] += idata[idx + blockDim.x];
 	}
-	for (int stride = 1; stride < blockDim.x/2; stride *= 2)
+	for (int stride = blockDim.x / 2; stride > 0; stride >>= 1)
 	{
-		int index = 2 * stride * tid;	
-		if (index < blockDim.x)
+		if (tid < blockDim.x)
 		{
-			idata_tmp[index] += idata_tmp[index + stride];
+			idata_tmp[tid] += idata_tmp[tid + stride];
 		}
 		__syncthreads();
 	}
@@ -172,14 +171,15 @@ void kernel_sumVector()
 
 
 	// 并行改善分化2，改善2需要多个块，需要更改block和grid的值
-	dim3 block2();
-	dim3 grid2();
+	int block_n = 2; // 划分的块数
+	dim3 block2(nx/block_n, 1);
+	dim3 grid2((nx/block_n - 1) / block.x + 1, 1);
 	cudaMemcpy(d_a, h_a, nBytes, cudaMemcpyHostToDevice); 
 	cudaEventCreate(&start1);
 	cudaEventCreate(&stop1);
 	cudaEventRecord(start1, 0);
 
-	sumVectorImproved2_GPU << <grid, block >> > (d_a, d_res, nx);
+	sumVectorImproved2_GPU << <grid2, block2 >> > (d_a, d_res, nx);
 	cudaDeviceSynchronize();
 
 	cudaEventRecord(stop1, 0);
@@ -191,7 +191,7 @@ void kernel_sumVector()
 	// 将结果拷贝到主机
 	cudaMemcpy(h_res_fromGPU, d_res, nBytes, cudaMemcpyDeviceToHost);
 	sum1 = h_res_fromGPU[0];
-	std::cout << "sumVectorImproved_GPU sum = " << sum1 << std::endl;
+	std::cout << "sumVectorImproved2_GPU sum = " << sum1 << std::endl;
 
 
 	// CPU执行
