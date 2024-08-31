@@ -28,6 +28,7 @@
     <CudaCompile Include="Code\src\sumArray.cu" />
     <CudaCompile Include="Code\src\sumMatrix.cu" />
     <CudaCompile Include="Code\src\thread_id.cu" />
+    <CudaCompile Include="AOSwithSOA.cu" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\src\main.cpp" />

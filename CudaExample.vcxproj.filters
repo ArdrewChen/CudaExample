@@ -38,6 +38,9 @@
     <CudaCompile Include="Code\src\sumVector.cu">
       <Filter>源文件</Filter>
     </CudaCompile>
+    <CudaCompile Include="AOSwithSOA.cu">
+      <Filter>源文件</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\src\main.cpp">
