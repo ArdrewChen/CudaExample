@@ -118,7 +118,7 @@ void kernel_sumMatrix()
 	checkResult(h_res, h_res_fromGPU, nx * ny);
 
 
-	cudaFree(d_a);
+  	cudaFree(d_a);
 	cudaFree(d_b);
 	cudaFree(d_res);
 

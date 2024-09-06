@@ -131,5 +131,5 @@ void kernel_sumArray()
 	free(h_res);
 	free(h_res_from_gpu);		//释放主机内存
 
-	cudaDeviceReset();
+	cudaDeviceReset();          //设备重置
 }

@@ -16,5 +16,5 @@ void kernel_thread_id()
 	dim3 block(3,4,5);
 	dim3 grid(2,3,4);
 	thread_id << <grid, block >> > ();
-	cudaDeviceReset(); //这句话如果没有，则不能正常的运行
+	cudaDeviceReset(); 
 }
