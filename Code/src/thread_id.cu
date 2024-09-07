@@ -13,8 +13,9 @@ __global__ void thread_id(void)
 
 void kernel_thread_id() 
 {
-	dim3 block(3,4,5);
-	dim3 grid(2,3,4);
+	dim3 block(3,4,1);
+	dim3 grid(2,3,1);
+
 	thread_id << <grid, block >> > ();
 	cudaDeviceReset(); 
 }

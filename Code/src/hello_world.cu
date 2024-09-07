@@ -10,7 +10,8 @@ __global__ void hello_world() {
 
 // 核函数过渡函数
 void kernel_hello_world() {
-	hello_world << <1, 5>> > ();
-
+	hello_world << <2, 5>> > ();
+	
 	cudaDeviceReset(); //这句话如果没有，则不能正常的运行
+	printf("123");
 }
