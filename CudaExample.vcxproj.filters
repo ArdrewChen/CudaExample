@@ -38,7 +38,10 @@
     <CudaCompile Include="Code\src\sumVector.cu">
       <Filter>源文件</Filter>
     </CudaCompile>
-    <CudaCompile Include="Code\src\AOSwithSOA.cu">
+    <CudaCompile Include="Code\src\sharedMemory.cu">
+      <Filter>源文件</Filter>
+    </CudaCompile>
+    <CudaCompile Include="Code\src\stream.cu">
       <Filter>源文件</Filter>
     </CudaCompile>
   </ItemGroup>

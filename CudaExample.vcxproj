@@ -23,8 +23,9 @@
     <ClInclude Include="Code\include\tools.cuh" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="Code\src\AOSwithSOA.cu" />
+    <CudaCompile Include="Code\src\sharedMemory.cu" />
     <CudaCompile Include="Code\src\hello_world.cu" />
+    <CudaCompile Include="Code\src\stream.cu" />
     <CudaCompile Include="Code\src\sumVector.cu" />
     <CudaCompile Include="Code\src\sumArray.cu" />
     <CudaCompile Include="Code\src\sumMatrix.cu" />
