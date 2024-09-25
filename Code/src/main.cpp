@@ -8,6 +8,7 @@ int main() {
 	//kernel_sumMatrix();
 	//kernel_sumVector();
 	//kernel_stream();
-	kernel_sharedMemory();
+	//kernel_sharedMemory();
+	kernel_wrapshfl();
 	//std::cin.get();
 }

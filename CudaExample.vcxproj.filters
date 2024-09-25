@@ -44,6 +44,9 @@
     <CudaCompile Include="Code\src\stream.cu">
       <Filter>源文件</Filter>
     </CudaCompile>
+    <CudaCompile Include="Code\src\wrapshfl.cu">
+      <Filter>源文件</Filter>
+    </CudaCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\src\main.cpp">

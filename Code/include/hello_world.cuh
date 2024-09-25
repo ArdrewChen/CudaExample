@@ -4,4 +4,5 @@ void kernel_sumArray();
 void kernel_sumMatrix();
 void kernel_sumVector();
 void kernel_sharedMemory();
+void kernel_wrapshfl();
 void kernel_stream(); 
