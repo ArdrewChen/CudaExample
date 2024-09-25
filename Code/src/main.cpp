@@ -7,6 +7,7 @@ int main() {
 	//kernel_sumArray();
 	//kernel_sumMatrix();
 	//kernel_sumVector();
-	kernel_stream();
+	//kernel_stream();
+	kernel_sharedMemory();
 	//std::cin.get();
 }
